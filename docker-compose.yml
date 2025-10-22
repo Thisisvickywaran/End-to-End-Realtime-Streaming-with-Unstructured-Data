@@ -1,0 +1,46 @@
+version: '3'
+
+x-spark-common: &spark-common
+  image: apache/spark:3.5.1
+  environment:
+    - SPARK_MASTER_URL=spark://spark-master:7077
+    - SPARK_WORKER_CORES=2
+    - SPARK_WORKER_MEMORY=1g
+  depends_on:
+    - spark-master
+  networks:
+    - datamasterylab
+
+services:
+  spark-master:
+    image: apache/spark:3.5.1
+    environment:
+      - SPARK_MODE=master
+    ports:
+      - "8080:8080"  # Spark Web UI
+      - "7077:7077"  # Spark master port
+    networks:
+      - datamasterylab
+
+  spark-worker-1:
+    <<: *spark-common
+    environment:
+      - SPARK_MODE=worker
+
+  spark-worker-2:
+    <<: *spark-common
+    environment:
+      - SPARK_MODE=worker
+
+  spark-worker-3:
+    <<: *spark-common
+    environment:
+      - SPARK_MODE=worker
+
+  spark-worker-4:
+    <<: *spark-common
+    environment:
+      - SPARK_MODE=worker
+
+networks:
+  datamasterylab:
